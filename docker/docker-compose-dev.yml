@@ -1,0 +1,34 @@
+version: "3"
+services:
+  db:
+    platform: linux/amd64
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ralph_ng
+      MYSQL_ROOT_PASSWORD: ralph_ng
+      MYSQL_USER: ralph_ng
+      MYSQL_PASSWORD: ralph_ng
+    volumes:
+      - ./volumes/static:/opt/static
+      - ./volumes/media:/opt/media
+      - ./volumes/mysql:/var/lib/mysql
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+  redis:
+    platform: linux/amd64
+    image: redis:3.0
+    ports:
+      - "6379:6379"
+  inkpy:
+    platform: linux/amd64
+    image: allegro/inkpy:latest
+    restart: always
+    links:
+      - redis:redis
+    environment:
+        REDIS_HOST: redis
+        REDIS_PASSWORD: ""
+        REDIS_PORT: 6379
+        REDIS_DB: 0
+
